@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAFIA // RED LINE CYBERPUNK</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="overlay-scanline"></div>
+
+    <header class="cyber-header">
+        <div class="logo-container">
+            <svg class="cyber-logo-icon" viewBox="0 0 100 100">
+                <polygon points="50,5 90,25 90,75 50,95 10,75 10,25" fill="none" stroke="#ff003c" stroke-width="4"/>
+                <circle cx="50" cy="50" r="22" fill="#ff003c" opacity="0.2"/>
+                <path d="M30,42 L50,25 L70,42 L70,55 L30,55 Z" fill="#ff003c"/>
+                <circle cx="40" cy="62" r="4" fill="#ff003c"/>
+                <circle cx="60" cy="62" r="4" fill="#ff003c"/>
+                <line x1="20" y1="50" x2="80" y2="50" stroke="#ff003c" stroke-width="3"/>
+            </svg>
+            <div class="logo-text">
+                <span class="glitch-text">MAFIA</span>
+                <span class="sub-text">// RED LINE PROTOCOL</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- HOME SECTION -->
+        <section id="home" class="cyber-card">
+            <div class="hero-banner">
+                <h2>Otorisasi Pengguna</h2>
+                <p>Masuk ke terminal kota bawah tanah untuk memulai infiltrasi.</p>
+            </div>
+
+            <div class="input-group">
+                <label>NAMA AGEN / PENGGUNA</label>
+                <input type="text" id="name" placeholder="Masukkan codename..." maxlength="15">
+            </div>
+
+            <div class="button-grid">
+                <button class="btn btn-primary" onclick="createRoom()">
+                    <span>BUAT SEKTOR BARU</span>
+                </button>
+                <div class="join-box">
+                    <input type="text" id="roomCode" placeholder="KODE SEKTOR" maxlength="6">
+                    <button class="btn btn-secondary" onclick="joinRoom()">GABUNG</button>
+                </div>
+            </div>
+
+            <!-- ROLE SHOWCASE -->
+            <div class="roles-showcase">
+                <h3>PERAN TERSEDIA IN-GAME</h3>
+                <div class="roles-grid">
+                    <div class="role-badge">
+                        <svg viewBox="0 0 64 64"><polygon points="32,4 58,18 58,46 32,60 6,46 6,18" fill="none" stroke="#ff003c" stroke-width="3"/><path d="M20,24 L44,24 L32,44 Z" fill="#ff003c"/></svg>
+                        <span>MAFIA</span>
+                    </div>
+                    <div class="role-badge">
+                        <svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="24" fill="none" stroke="#00f0ff" stroke-width="3"/><path d="M32,16 L32,48 M16,32 L48,32" stroke="#00f0ff" stroke-width="3"/></svg>
+                        <span>WARGA</span>
+                    </div>
+                    <div class="role-badge">
+                        <svg viewBox="0 0 64 64"><circle cx="28" cy="28" r="16" fill="none" stroke="#ff003c" stroke-width="3"/><line x1="40" y1="40" x2="56" y2="56" stroke="#ff003c" stroke-width="4"/></svg>
+                        <span>DETEKTIF</span>
+                    </div>
+                    <div class="role-badge">
+                        <svg viewBox="0 0 64 64"><rect x="14" y="14" width="36" height="36" fill="none" stroke="#00ff66" stroke-width="3"/><path d="M32,22 L32,42 M22,32 L42,32" stroke="#00ff66" stroke-width="4"/></svg>
+                        <span>DOKTER</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- LOBBY SECTION -->
+        <section id="lobby" class="cyber-card hidden">
+            <div class="sector-header">
+                <h2>SEKTOR DIBUKA: <span id="code" class="highlight-text">------</span></h2>
+                <p>Menunggu agen lain terhubung ke jaringan...</p>
+            </div>
+
+            <div class="lobby-layout">
+                <div class="player-list-box">
+                    <h3>DAFTAR AGEN TERHUBUNG</h3>
+                    <div id="players" class="players-container"></div>
+                    <button class="btn btn-primary full-width margin-top" onclick="startGame()" style="display:none;">
+                        MULAI OPERASI
+                    </button>
+                </div>
+
+                <!-- CHAT BOX -->
+                <div class="chat-box">
+                    <div class="chat-header">TERMINAL CHAT</div>
+                    <div id="chatMessages" class="chat-messages"></div>
+                    <div class="chat-input-row">
+                        <input type="text" id="chatInput" placeholder="Ketik pesan..." onkeydown="if(event.key==='Enter') sendChat()">
+                        <button class="btn btn-small" onclick="sendChat()">KIRIM</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- GAME PLAY SECTION -->
+        <section id="game" class="cyber-card hidden">
+            <div class="hud-bar">
+                <div class="hud-item">
+                    <span class="hud-label">FASE OPERASI</span>
+                    <span id="phase" class="hud-value">MENUNGGU</span>
+                </div>
+                <div class="hud-item">
+                    <span class="hud-label">PERAN RAHASIA Anda</span>
+                    <span id="role" class="hud-value highlight-text">-</span>
+                </div>
+            </div>
+
+            <div class="narrator-box">
+                <div id="narrator">Sistem siap. Menunggu perintah...</div>
+            </div>
+
+            <div class="game-split">
+                <div class="action-panel">
+                    <div id="actions"></div>
+                </div>
+
+                <div class="chat-box">
+                    <div id="chatPhaseIndicator" class="chat-header">LOG DOKUMEN SISTEM</div>
+                    <div id="gameChatMessages" class="chat-messages"></div>
+                    <div class="chat-input-row">
+                        <input type="text" id="gameChatInput" placeholder="Ketik pesan..." onkeydown="if(event.key==='Enter') sendGameChat()">
+                        <button class="btn btn-small" onclick="sendGameChat()">KIRIM</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>
